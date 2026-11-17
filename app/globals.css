@@ -1,0 +1,96 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+:root {
+  --radius: 0.75rem;
+  --background: #060708;
+  --foreground: #f1f2ec;
+  --card: #14161a;
+  --card-foreground: #f1f2ec;
+  --popover: #14161a;
+  --popover-foreground: #f1f2ec;
+  --primary: #c6ff3d;
+  --primary-foreground: #060708;
+  --secondary: #14161a;
+  --secondary-foreground: #f1f2ec;
+  --muted: #14161a;
+  --muted-foreground: #9197a0;
+  --accent: #1a1d22;
+  --accent-foreground: #f1f2ec;
+  --destructive: #ff6b6b;
+  --border: #25272c;
+  --input: #25272c;
+  --ring: #c6ff3d;
+}
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-space-mono), ui-monospace, monospace;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+  ::selection {
+    background: #c6ff3d;
+    color: #060708;
+  }
+}
+
+/* Subtle lime grid used behind hero and page intros */
+.bg-grid {
+  background-image: linear-gradient(
+      to right,
+      rgb(198 255 61 / 0.04) 1px,
+      transparent 1px
+    ),
+    linear-gradient(to bottom, rgb(198 255 61 / 0.04) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+
+/* Soft radial glow, accent coloured */
+.bg-glow {
+  background-image: radial-gradient(
+    ellipse 60% 45% at 70% 30%,
+    rgb(198 255 61 / 0.06),
+    transparent 70%
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
