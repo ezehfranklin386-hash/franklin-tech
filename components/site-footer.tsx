@@ -42,6 +42,18 @@ export function SiteFooter() {
             <span className="bg-primary size-2 rounded-full" aria-hidden />
             Available for new projects
           </p>
+          <p className="text-sm">
+            <a
+              href={`${site.whatsapp.link}?text=${encodeURIComponent(
+                "Hi Franklin, I'd like to discuss a project."
+              )}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-foreground/80 hover:text-foreground transition-colors"
+            >
+              WhatsApp: {site.whatsapp.display}
+            </a>
+          </p>
         </div>
 
         <div>

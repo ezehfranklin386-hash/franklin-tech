@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { Mail } from "lucide-react";
+import { Mail, MessageCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { ContactForm } from "@/components/contact-form";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
@@ -83,12 +84,30 @@ export default function ContactPage() {
                   >
                     <Mail className="size-4" /> {site.email}
                   </a>
-                ) : (
-                  <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
-                    Business email is being added before launch. The form
-                    works in the meantime.
-                  </p>
-                )}
+                ) : null}
+              </div>
+              <div className="mt-8 border-t pt-6">
+                <p className="text-muted-foreground text-xs uppercase tracking-[0.2em]">
+                  Prefer WhatsApp?
+                </p>
+                <Button
+                  size="lg"
+                  className="mt-3 w-full rounded-full sm:w-auto"
+                  asChild
+                >
+                  <a
+                    href={`${site.whatsapp.link}?text=${encodeURIComponent(
+                      "Hi Franklin, I'd like to discuss a project."
+                    )}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <MessageCircle /> Chat on WhatsApp
+                  </a>
+                </Button>
+                <p className="text-muted-foreground mt-2 text-xs">
+                  {site.whatsapp.display}
+                </p>
               </div>
             </div>
 

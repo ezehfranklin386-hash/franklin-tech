@@ -2,6 +2,8 @@
 
 import { promises as fs } from "fs";
 import path from "path";
+import nodemailer from "nodemailer";
+import { site } from "@/lib/site";
 
 export type ContactState = {
   ok: boolean;
@@ -44,31 +46,62 @@ export async function submitContact(
     return { ok: false, fieldErrors };
   }
 
-  // TODO: hook up email delivery (Resend, Nodemailer + SMTP, or a database).
-  // Until then, submissions are stored in /data/messages so nothing is lost.
-  // Note: this folder is local only; on a serverless host it will not persist.
+  const payload = {
+    name,
+    email,
+    company,
+    topic,
+    budget,
+    message,
+    receivedAt: new Date().toISOString(),
+  };
+
+  // Email delivery via SMTP when credentials are configured in .env.
+  // Without them, submissions are still stored locally so nothing is lost.
+  if (process.env.SMTP_USER && process.env.SMTP_PASS) {
+    try {
+      const transporter = nodemailer.createTransport({
+        host: "smtp.gmail.com",
+        port: 465,
+        secure: true,
+        auth: {
+          user: process.env.SMTP_USER,
+          pass: process.env.SMTP_PASS,
+        },
+      });
+      await transporter.sendMail({
+        from: process.env.SMTP_USER,
+        to: site.email || process.env.SMTP_USER,
+        replyTo: email,
+        subject: `New enquiry from ${name} — ${topic || "website project"}`,
+        text: [
+          `Name: ${name}`,
+          `Email: ${email}`,
+          `Company: ${company || "—"}`,
+          `Topic: ${topic || "—"}`,
+          `Budget: ${budget || "—"}`,
+          "",
+          "Message:",
+          message,
+        ].join("\n"),
+      });
+      return {
+        ok: true,
+        message:
+          "Thank you for reaching out. Your message has been received. I'll be in touch as soon as possible.",
+      };
+    } catch (err) {
+      console.error("Failed to send contact email:", err);
+    }
+  }
+
+  // Fallback: store locally. Note: local only; not for serverless hosts.
   try {
     const dir = path.join(process.cwd(), "data", "messages");
     await fs.mkdir(dir, { recursive: true });
     const safe = name.replace(/[^a-z0-9]/gi, "-").slice(0, 30);
     const file = path.join(dir, `${Date.now()}-${safe}.json`);
-    await fs.writeFile(
-      file,
-      JSON.stringify(
-        {
-          name,
-          email,
-          company,
-          topic,
-          budget,
-          message,
-          receivedAt: new Date().toISOString(),
-        },
-        null,
-        2
-      ),
-      "utf-8"
-    );
+    await fs.writeFile(file, JSON.stringify(payload, null, 2), "utf-8");
   } catch (err) {
     console.error("Failed to store contact message:", err);
   }
